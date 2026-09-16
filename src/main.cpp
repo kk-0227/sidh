@@ -1,5 +1,9 @@
 #include <iostream>
+#include "fp.hpp"
 
 int main(){
-    std::cout << "Hello World" << std::endl;
+    Fp a(80);
+    Fp b(30);
+    (a/0).print();
+    a.mul(a.inv()).print();
 }
