@@ -51,6 +51,7 @@ public:
         value = div(rhs).value;
         return *this;
     }
+    Fp operator-() const { return Fp(0) - *this; }
     bool operator==(const Fp& rhs)  {
         return value == rhs.value;
     }

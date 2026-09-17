@@ -1,9 +1,9 @@
 #include <iostream>
 #include "fp.hpp"
+#include "fp2.hpp"
 
 int main(){
-    Fp a(80);
-    Fp b(30);
-    (a/0).print();
-    a.mul(a.inv()).print();
+    Fp2 a(80,30);
+    Fp2 b = -a;
+    b.print();
 }
