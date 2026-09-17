@@ -52,10 +52,10 @@ public:
         return *this;
     }
     Fp operator-() const { return Fp(0) - *this; }
-    bool operator==(const Fp& rhs)  {
+    bool operator==(const Fp& rhs) const {
         return value == rhs.value;
     }
-    bool operator!=(const Fp& rhs)  {
+    bool operator!=(const Fp& rhs) const {
         return value != rhs.value;
     }
     // デバッグ出力用

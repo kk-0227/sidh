@@ -56,8 +56,8 @@ public:
 
     Fp2 operator-() const {return Fp2(-a, -b); }
     // operator==の中ではFp2の==まだ定義されていない
-    bool operator==(const Fp2& rhs) {return (a == rhs.a) && (b == rhs.b); }
-    bool operator!=(const Fp2& rhs) {return (a != rhs.a) || (b != rhs.b); }
+    bool operator==(const Fp2& rhs) const {return (a == rhs.a) && (b == rhs.b); }
+    bool operator!=(const Fp2& rhs) const {return *this != rhs; }
 };
 
 #endif // FP2_HPP
