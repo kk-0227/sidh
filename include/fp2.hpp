@@ -14,7 +14,7 @@ public:
     // コンストラクタ、引数の渡し方によって初期化方法を変える
     Fp2() : a(0), b(0) {}
     Fp2(const Fp& real, const Fp& imag) : a(real), b(imag) {}
-    Fp2(uint64_t real, uint64_t imag) : a(real), b(imag) {}
+    Fp2(uint64_t real, uint64_t imag = 0) : a(real), b(imag) {}
 
     Fp get_real() const { return a; }
     Fp get_imag() const { return b; }
