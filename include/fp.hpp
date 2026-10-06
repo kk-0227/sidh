@@ -11,12 +11,12 @@ private:
     uint64_t value;
 
     // SIDHで使用する素数 p (例として小さな素数、またはパラメータを定義)
-    static constexpr uint64_t MODULUS = 97; // 初期テスト用の小さな素数
+    static constexpr uint64_t MODULUS = 71; // 初期テスト用の小さな素数
 
 public:
     // コンストラクタ
     Fp();
-    Fp(uint64_t v);
+    Fp(int64_t v);
 
     // 値の取得
     uint64_t get_value() const;

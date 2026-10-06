@@ -4,7 +4,13 @@
 Fp::Fp() : value(0) {}
 
 // 値を指定するコンストラクタ
-Fp::Fp(uint64_t v) : value(v % MODULUS) {}
+Fp::Fp(int64_t v) {
+    int64_t rem = v % static_cast<int64_t>(MODULUS);
+    if (rem < 0) {
+        rem += MODULUS;
+    }
+    value = static_cast<uint64_t>(rem);
+}
 
 uint64_t Fp::get_value() const {
     return value;

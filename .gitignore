@@ -2,3 +2,4 @@ build/
 *.dSYM/
 src/main
 .vscode/
+debug/
