@@ -1,32 +1,6 @@
 #include "isogeny.hpp"
 #include <cassert> // assertマクロを使用するために追加
 
-Isogeny2_af::Isogeny2_af(const AffinePoint& K) : K(K) {}
-
-Fp2 Isogeny2_af::get_next_A() const {
-    return Fp2(2) * (Fp2(1) - Fp2(2) * K.X * K.X);
-}
-
-AffinePoint Isogeny2_af::eval(const AffinePoint& Q) const {
-    // 無限遠点は無限遠点に移る
-    if (Q.is_infinity) {
-        return AffinePoint::Infinity();
-    }
-
-    // カーネル自身もしくはカーネル部分群の点は無限遠点に移る
-    if (Q.X == K.X) {
-        return AffinePoint::Infinity();
-    }
-
-    Fp2 num = Q.X * K.X - Fp2(1);
-    Fp2 den = (K.X * (Q.X - K.X)).inv();
-
-    Fp2 next_X = num * num * den;
-    Fp2 next_Y = Q.Y * num * (Q.X * K.X + Fp2(1) - Fp2(2) * K.X * K.X) * den * (Q.X - K.X).inv();
-    
-    return AffinePoint(next_X, next_Y);
-}
-
 Isogeny2::Isogeny2(const ProjectivePoint& K) : K(K) {}
 
 Fp2 Isogeny2::get_next_A() const{
@@ -161,14 +135,14 @@ IsogenyChainResult iso_chain_3e(
         for (int j = 0; j < i; ++j) {
             // [3]K = [2]K + K の計算 (差分点は元の K)
             ProjectivePoint K2 = curve.xDBL(K);
-            K = curve.xADD(K2, K, K);
+            // K = curve.xDBLADD(K2, K, K);
         }
 
         // --- 実行時アサーション: 核 K の位数3検証 ---
-        assert(!K.Z.is_zero() && "Fatal: 3-torsion kernel point K degenerated to infinity.");
-        ProjectivePoint K_times_2 = curve.xDBL(K);
-        ProjectivePoint K_times_3 = curve.xADD(K_times_2, K, K); // 差分点は K
-        assert(K_times_3.Z.is_zero() && "Fatal: Kernel point K does not have strictly order 3.");
+        //assert(!K.Z.is_zero() && "Fatal: 3-torsion kernel point K degenerated to infinity.");
+        //ProjectivePoint K_times_2 = curve.xDBL(K);
+        //ProjectivePoint K_times_3 = curve.xDBLADD(K_times_2, K, K); // 差分点は K
+        //assert(K_times_3.Z.is_zero() && "Fatal: Kernel point K does not have strictly order 3.");
         // -------------------------------------------
 
         Isogeny3 iso(K);

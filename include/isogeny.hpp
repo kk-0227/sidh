@@ -4,23 +4,6 @@
 #include "fp2.hpp"
 #include "curve.hpp"
 
-// アフィン座標での2-同種写像を計算
-class Isogeny2_af {
-private:
-    AffinePoint K; // 核
-
-public:
-    // コンストラクタ: 核となる点 K を渡して初期化
-    explicit Isogeny2_af(const AffinePoint& K);
-
-    // 新しい曲線 E' のパラメータ A' を計算する (BuildIsogeny)
-    Fp2 get_next_A() const;
-
-    // 点 Q を新しい曲線 E' 上の点 phi(Q) に写像する (EvalIsogeny)
-    AffinePoint eval(const AffinePoint& Q) const;
-
-};
-
 // 2-同種写像の計算を行うクラス
 class Isogeny2 {
 private:

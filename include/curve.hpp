@@ -5,31 +5,6 @@
 #include "fp2.hpp"
 #include <iostream>
 
-// アフィン座標上の点を表す構造体
-struct AffinePoint {
-    Fp2 X;
-    Fp2 Y;
-    bool is_infinity;
-
-    // コンストラクタ
-    AffinePoint(const Fp2& x, const Fp2& y)
-        : X(x), Y(y), is_infinity(false) {}
-    // デフォルトの場合は無限遠点を返す
-    AffinePoint() : X(0), Y(0), is_infinity(true) {}
-
-    // 無限遠点を返す関数
-    static AffinePoint Infinity() {
-        return AffinePoint();
-    }
-
-    void print() const {
-        std::cout << "x : ";
-        X.print();
-        std::cout << "y : ";
-        Y.print();
-    }
-};
-
 // 射影座標上の点を表す構造体
 struct ProjectivePoint {
     Fp2 X;
@@ -43,32 +18,54 @@ struct ProjectivePoint {
         std::cout << "Z : ";
         Z.print();
     }
+
+    static ProjectivePoint infinity() {
+        return ProjectivePoint(Fp2(1), Fp2(0));
+    }
+
+    bool is_infinity() const {
+        return Z == Fp2(0);
+    }
+};
+
+struct DblAddResult {
+    ProjectivePoint DBL;
+    ProjectivePoint ADD;
+
+    DblAddResult(const ProjectivePoint& dbl, const ProjectivePoint& add) : DBL(dbl), ADD(add) {}
 };
 
 class MontgomeryCurve {
 private:
-    // モンゴメリ係数(By^2 = x^3 + Ax^2 + x)
-    Fp2 A;
-    // (A+2)/4
+
+    // 4の逆元を一度だけ計算
+    static const Fp2& inv4(){
+        static const Fp2 inv4_value = Fp2(4).inv();
+        return inv4_value;
+    }
+    // モンゴメリ係数(Cy^2 = x^3 + Ax^2 + x)
+    // A = (A : C)
+    ProjectivePoint A;
+
     // 何度も使うので前計算しておく
-    Fp2 A24;
+    Fp2 A24plus; // A + 2C
+    Fp2 C24plus; // 4C
+    Fp2 A24minus; // A - 2C
+    Fp2 A24; // (A + 2C)/(4C)
+
 public:
-    MontgomeryCurve(const Fp2& a) : A(a), A24((a + 2)*Fp2(4).inv()) {}
 
-    Fp2 get_A() const { return A; }
-
-
-    // アフィン座標上の演算
-    // xADD : 加算, xDBL : 2倍算, xMUL : k倍算
-    AffinePoint xADD(const AffinePoint& P, const AffinePoint& Q) const ;
-    AffinePoint xDBL(const AffinePoint& P) const ;
-    AffinePoint xMUL(const AffinePoint& P, uint64_t k) const ;
-
+    // 曲線の生成
+    // 初期値は(A : C) = (A : 1)と考える
+    MontgomeryCurve(const Fp2& a) : A(ProjectivePoint(a, Fp2(1))), A24plus(a + Fp2(2)), C24plus(Fp2(4)), A24minus(a - Fp2(2)), A24(A24plus * inv4()) {}
+    MontgomeryCurve(const ProjectivePoint& a) : A(a), A24plus(a.X + Fp2(2) * a.Z), C24plus(a.Z * Fp2(4)), A24minus(a.X - Fp2(2) * a.Z), A24(A24plus * C24plus.inv()) {}
+    
+    ProjectivePoint get_A() const { return A; }
 
     // 射影座標上の演算
     // P_minus_Qは最初に入力された点を入れる
-    ProjectivePoint xADD(const ProjectivePoint& P, const ProjectivePoint& Q, const ProjectivePoint& P_minus_Q) const ;
     ProjectivePoint xDBL(const ProjectivePoint& P) const ;
+    DblAddResult xDBLADD(const ProjectivePoint& P, const ProjectivePoint& Q, const ProjectivePoint& P_minus_Q) const ;
     ProjectivePoint xMUL(const ProjectivePoint& P, uint64_t k) const ;
 };
 
