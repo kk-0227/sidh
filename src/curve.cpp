@@ -51,7 +51,7 @@ DblAddResult MontgomeryCurve::xDBLADD(const ProjectivePoint& P, const Projective
 
     return DblAddResult(DBL, ADD);
 }
-
+// k倍算
 ProjectivePoint MontgomeryCurve::xMUL(const ProjectivePoint& P, uint64_t k) const {
     // mPを計算する
     ProjectivePoint R0 = ProjectivePoint::infinity(), R1 = P;
@@ -69,6 +69,43 @@ ProjectivePoint MontgomeryCurve::xMUL(const ProjectivePoint& P, uint64_t k) cons
         }
     }
     return R0;
+}
+
+// 3倍算
+ProjectivePoint MontgomeryCurve::xTPL(const ProjectivePoint& P) const {
+    
+    Fp2 t0 = P.X - P.Z;
+    Fp2 t1 = P.X + P.Z;
+
+    Fp2 t2 = t0 * t0;
+    Fp2 t3 = t1 * t1;
+    Fp2 t4 = Fp2(2) * P.X;
+
+    t0 = Fp2(2) * P.Z;
+    t1 = t4 * t4;
+    t1 = t1 - t3 - t2;
+
+    Fp2 t5 = A24plus * t3;
+    t3 = t5 * t3;
+
+    Fp2 t6 = A24minus * t2;
+    t2 = t6 * t2;
+    t3 = t2 - t3;
+
+    t2 = t5 - t6;
+    t1 = t1*t2;
+
+    t2 = t1 + t3;
+    t2 = t2 * t2;
+
+    Fp2 next_X = t2 * t4;
+
+    t1 = t3 - t1;
+    t1 = t1 * t1;
+
+    Fp2 next_Z = t0 * t1;
+
+    return ProjectivePoint(next_X, next_Z);
 }
 
 Fp2 calc_j_invariant(const Fp2& A) {
