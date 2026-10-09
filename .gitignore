@@ -3,3 +3,4 @@ build/
 src/main
 .vscode/
 debug/
+.DS_Store
