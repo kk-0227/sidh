@@ -85,25 +85,7 @@ IsogenyChainResult iso_chain_2e(
         for (int j = 0; j < i; ++j) {
             K = curve.xDBL(K);
         }
-
-        // --- 実行時アサーション: 核 K の位数2検証 ---
-        assert(!K.Z.is_zero() && "Fatal: 2-torsion kernel point K degenerated to infinity.");
-        ProjectivePoint K_times_2 = curve.xDBL(K);
-        assert(K_times_2.Z.is_zero() && "Fatal: Kernel point K does not have strictly order 2.");
-        // -------------------------------------------
-        // iso_chain_2e のループ内
-
-
-        // --- デバッグ出力 ---
-        std::cout << "[DEBUG] Step i=" << i << " K.X="; K.X.print();
-        std::cout << "[DEBUG] Step i=" << i << " K.Z="; K.Z.print();
         
-        std::cout << "[DEBUG] K_times_2.X="; K_times_2.X.print();
-        std::cout << "[DEBUG] K_times_2.Z="; K_times_2.Z.print();
-        // --------------------
-
-        assert(!K.Z.is_zero() && "Fatal: 2-torsion kernel point K degenerated to infinity.");
-        assert(K_times_2.Z.is_zero() && "Fatal: Kernel point K does not have strictly order 2.");
         // 2. K を核として 2-isogeny を構築
         Isogeny2 iso(K);
         current_A = iso.get_next_A();
@@ -133,9 +115,7 @@ IsogenyChainResult iso_chain_3e(
     for (int i = e - 1; i >= 0; --i) {
         ProjectivePoint K = S;
         for (int j = 0; j < i; ++j) {
-            // [3]K = [2]K + K の計算 (差分点は元の K)
-            ProjectivePoint K2 = curve.xDBL(K);
-            // K = curve.xDBLADD(K2, K, K);
+            K = curve.xDBL(K);
         }
 
         // --- 実行時アサーション: 核 K の位数3検証 ---

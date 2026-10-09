@@ -10,9 +10,11 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学�
 - 正しく実装できているかを検証するため、小さいテストケースを作り、sagemathを使って正しい出力と比較しつつ進めいています
 
 ## 状況
-- [x] 有限体演算
-- [ ] 楕円曲線演算(実装中)
-- [ ] 同種写像の計算
+- [x] 有限体演算(Fp, Fp2)
+- [ ] Montgomery曲線上の演算(実装中)
+  - [x] xDBL, xDBLADD, xMUL
+  - [ ] 3倍点(xTPL), 3点ラダー(3pt ladder)
+- [ ] 同種写像(2-isogeny, 3-isogeny の仕様に沿って再実装予定)
 - [ ] 鍵交換
 
 ## 注意
