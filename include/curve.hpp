@@ -68,6 +68,7 @@ public:
     DblAddResult xDBLADD(const ProjectivePoint& P, const ProjectivePoint& Q, const ProjectivePoint& P_minus_Q) const ;
     ProjectivePoint xMUL(const ProjectivePoint& P, uint64_t k) const ;
     ProjectivePoint xTPL(const ProjectivePoint& P) const ;
+    ProjectivePoint LADDER3PT(const ProjectivePoint& P, const ProjectivePoint& Q, const ProjectivePoint& P_minus_Q, uint64_t k) const ;
 };
 
 // j不変量の計算

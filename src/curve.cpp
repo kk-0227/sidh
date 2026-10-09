@@ -108,6 +108,30 @@ ProjectivePoint MontgomeryCurve::xTPL(const ProjectivePoint& P) const {
     return ProjectivePoint(next_X, next_Z);
 }
 
+// P + [k]Q を計算
+ProjectivePoint MontgomeryCurve::LADDER3PT(const ProjectivePoint& P, const ProjectivePoint& Q, const ProjectivePoint& P_minus_Q, uint64_t k) const {
+    ProjectivePoint R0 = Q; // [2^i]Q
+    ProjectivePoint R1 = P; // P + [kの下位iビット]Q
+    ProjectivePoint R2 = P_minus_Q; // 差分 R1 - R0
+
+    // R0は常に2倍したい
+    // ビットが立っている時は　R1 = R0 + R1, 差分(R2)は更新なし
+    // ビットが立っていない時は R1 は更新なし, R2 = R2 - R0(これは更新前でR0の増加量と一致する)
+    for( ; k; k >>= 1) {
+        if(k & 1) {
+            DblAddResult r = xDBLADD(R0, R1, R2);   // R1 + R0(差分は R2)
+            R0 = r.DBL;
+            R1 = r.ADD;
+        } else {
+            DblAddResult r = xDBLADD(R0, R2, R1);   // R2 + R0(差分は R1)
+            R0 = r.DBL;
+            R2 = r.ADD;
+        }
+    }
+    
+    return R1;
+}
+
 Fp2 calc_j_invariant(const Fp2& A) {
     Fp2 A2 = A * A;
     Fp2 num = A2 - Fp2(3, 0);

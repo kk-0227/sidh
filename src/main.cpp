@@ -31,7 +31,36 @@ static void test_montgomery_ladder() {
     std::cout << "[OK] montgomery ladder\n";
 }
 
+// xTPL が xMUL(P, 3) と一致し、位数 3^2 の点は 2 回で無限遠点になるか確認する
+static void test_tripling() {
+    MontgomeryCurve curve(INITIAL_A);
+
+    for (const ProjectivePoint& P : {P_A, Q_A, R_A, P_B, Q_B, R_B}) {
+        assert(proj_eq(curve.xTPL(P), curve.xMUL(P, 3)));
+    }
+    for (const ProjectivePoint& P : {P_B, Q_B, R_B}) {
+        assert(curve.xTPL(curve.xTPL(P)).is_infinity());
+    }
+
+    std::cout << "[OK] tripling\n";
+}
+
+static void test_ladder3pt() {
+    MontgomeryCurve curve(INITIAL_A);
+    const ProjectivePoint G = P_B;
+
+    for (uint64_t k = 0; k < 20; ++k) {
+        ProjectivePoint P = curve.xMUL(G, 5);
+        ProjectivePoint Q = curve.xMUL(G, 2);
+        ProjectivePoint D = curve.xMUL(G, 3);   // P - Q
+        assert(proj_eq(curve.LADDER3PT(P, Q, D, k), curve.xMUL(G, 5 + 2 * k)));
+    }
+    std::cout << "[OK] ladder3pt\n";
+}
+
 int main() {
     test_montgomery_ladder();
+    test_tripling();
+    test_ladder3pt();
     return 0;
 }
