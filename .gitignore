@@ -3,4 +3,4 @@ build/
 src/main
 .vscode/
 .DS_Store
-debug/
+debug/*.sage.py
