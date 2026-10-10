@@ -2,5 +2,4 @@ build/
 *.dSYM/
 src/main
 .vscode/
-debug/
 .DS_Store

@@ -1,0 +1,95 @@
+# ==============================================================================
+# SIDH Toy Parameter Generator (p = 71) - Auto Header Generation Version
+# ==============================================================================
+from sage.all_cmdline import *   # import sage library
+
+_sage_const_3 = Integer(3); _sage_const_2 = Integer(2); _sage_const_1 = Integer(1); _sage_const_6 = Integer(6); _sage_const_0 = Integer(0)
+
+eA = _sage_const_3 
+eB = _sage_const_2 
+f = _sage_const_1 
+p = f * (_sage_const_2 **eA) * (_sage_const_3 **eB) - _sage_const_1  # 1 * 8 * 9 - 1 = 71
+
+# 拡大体 F_{p^2} の定義
+Fp = GF(p)
+R = PolynomialRing(Fp, 'x')
+x = R.gen()
+Fp2 = GF(p**_sage_const_2 , name='i', modulus=x**_sage_const_2  + _sage_const_1 )
+i = Fp2.gen()
+
+# 初期モンゴメリ曲線 E_0: y^2 = x^3 + 6x^2 + x
+A0 = Fp2(_sage_const_6 )
+E0 = EllipticCurve(Fp2, [_sage_const_0 , A0, _sage_const_0 , _sage_const_1 , _sage_const_0 ])
+
+# 超特異楕円曲線の各生成元の最大位数は p+1
+max_order = p + _sage_const_1 
+
+# 群の生成元を2つ取得
+G = E0.abelian_group()
+gens = G.gens()
+G1 = gens[_sage_const_0 ].element()
+G2 = gens[_sage_const_1 ].element()
+
+# Alice の基底点 (位数 2^eA)
+cofactor_A = max_order // (_sage_const_2 **eA) # 72 // 8 = 9
+PA = cofactor_A * G1
+QA = cofactor_A * G2
+RA = PA - QA
+
+# Bob の基底点 (位数 3^eB)
+cofactor_B = max_order // (_sage_const_3 **eB) # 72 // 9 = 8
+PB = cofactor_B * G1
+QB = cofactor_B * G2
+RB = PB - QB
+
+# C++ 文字列生成ヘルパー関数
+def format_cpp_point(name, Pt):
+    if Pt.is_zero():
+        return f"// ERROR: {name} is the Point at Infinity"
+    
+    # X座標の抽出
+    x_val = Pt.x()
+    x_coeffs = x_val.polynomial().list()
+    x_real = x_coeffs[_sage_const_0 ] if len(x_coeffs) > _sage_const_0  else _sage_const_0 
+    x_imag = x_coeffs[_sage_const_1 ] if len(x_coeffs) > _sage_const_1  else _sage_const_0 
+    
+    # Y座標の抽出
+    y_val = Pt.y()
+    y_coeffs = y_val.polynomial().list()
+    y_real = y_coeffs[_sage_const_0 ] if len(y_coeffs) > _sage_const_0  else _sage_const_0 
+    y_imag = y_coeffs[_sage_const_1 ] if len(y_coeffs) > _sage_const_1  else _sage_const_0 
+    
+    return f"const AffinePoint {name}(Fp2({x_real}, {x_imag}), Fp2({y_real}, {y_imag}));"
+
+# ヘッダーファイルの中身を組み立て
+header_content = f"""#ifndef PARAMS_AFFINE_HPP
+#define PARAMS_AFFINE_HPP
+
+#include <cstdint>
+#include "fp2.hpp"
+#include "curve.hpp"
+
+const uint64_t P_PRIME = {p};
+const int E_A = {eA};
+const int E_B = {eB};
+const Fp2 INITIAL_A(6, 0);
+
+// Alice's Basis Points (Order 2^eA)
+{format_cpp_point("P_A", PA)}
+{format_cpp_point("Q_A", QA)}
+{format_cpp_point("R_A", RA)}
+
+// Bob's Basis Points (Order 3^eB)
+{format_cpp_point("P_B", PB)}
+{format_cpp_point("Q_B", QB)}
+{format_cpp_point("R_B", RB)}
+
+#endif // PARAMS_AFFINE_HPP
+"""
+
+# ファイルに書き出し
+output_path = "include/params_affine.hpp"
+with open(output_path, "w") as f:
+    f.write(header_content)
+
+print(f"[+] Successfully generated and updated '{output_path}'!")
