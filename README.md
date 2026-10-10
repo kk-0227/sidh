@@ -34,11 +34,12 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。
 - `src/` : 実装と、テスト(`main.cpp`)
 
 ## ビルドと実行
-```bash
-./compile.sh
-```
 
-`build/main` を生成して、そのままテストを実行します(g++ の C++17 対応版が必要です)。
+```bash
+./compile.sh                     # ビルドして、テストを実行
+./build/main                     # 鍵交換のデモ
+./build/dump_shared_secrets      # 全組み合わせの共有秘密を出力(Sage との照合用)
+```
 
 ## 注意
 - 学習目的です。実運用には使わないでください。

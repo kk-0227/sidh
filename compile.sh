@@ -1,8 +1,13 @@
 #!/bin/bash
 set -e
 
-# C++17、警告を厳しめにしてコンパイル
-mkdir -p build
-g++ -std=c++17 -Wall -Wextra -O2 -Iinclude src/*.cpp -o build/main
+CXXFLAGS="-std=c++17 -Wall -Wextra -O2 -Iinclude"
+# main.cpp 以外の実装ファイル(ライブラリ部分)
+LIB=$(ls src/*.cpp | grep -v '/main\.cpp$')
 
-./build/main
+mkdir -p build
+g++ $CXXFLAGS $LIB src/main.cpp -o build/main                                # デモ
+g++ $CXXFLAGS $LIB tests/test_all.cpp -o build/test_all                      # テスト
+g++ $CXXFLAGS $LIB tests/dump_shared_secrets.cpp -o build/dump_shared_secrets # Sage 照合用
+
+./build/test_all

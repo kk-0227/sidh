@@ -1,5 +1,7 @@
-# Sage 組み込みの isogeny を使って共有鍵を計算し、自作したC++実装の結果をテストする。
-# sage tests/sage/verify_ket_exchange.sage
+# Sage 組み込みの isogeny を使って共有秘密(j 不変量)を計算し、C++ 実装の結果と照合する。
+# 実行: sage tests/sage/verify_key_exchange.sage
+# 基底点は params.hpp の x 座標から作り、R = P - Q の関係に符号を合わせている。
+
 p = 71
 Fp2.<i> = GF(p^2, modulus=x^2 + 1)
 E0 = EllipticCurve(Fp2, [0, 6, 0, 1, 0])
