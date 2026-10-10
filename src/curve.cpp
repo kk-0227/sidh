@@ -116,7 +116,7 @@ ProjectivePoint MontgomeryCurve::LADDER3PT(const ProjectivePoint& P, const Proje
 
     // R0は常に2倍したい
     // ビットが立っている時は　R1 = R0 + R1, 差分(R2)は更新なし
-    // ビットが立っていない時は R1 は更新なし, R2 = R2 - R0(これは更新前でR0の増加量と一致する)
+    // ビットが立っていない時は R1 は更新なし, R2 = R2 - R0(R0が増えた分差分が縮む)
     for( ; k; k >>= 1) {
         if(k & 1) {
             DblAddResult r = xDBLADD(R0, R1, R2);   // R1 + R0(差分は R2)

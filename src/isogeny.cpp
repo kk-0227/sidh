@@ -1,50 +1,34 @@
 #include "isogeny.hpp"
 #include <cassert> // assertマクロを使用するために追加
 
-Isogeny2::Isogeny2(const ProjectivePoint& K) : K(K) {}
-
-Fp2 Isogeny2::get_next_A() const{
-    Fp2 XK2 = K.X * K.X;
-    Fp2 ZK2 = K.Z * K.Z;
-
-    Fp2 num = (XK2 + ZK2) * Fp2(2,0);
-    Fp2 den = ZK2 - XK2;
-    return num * den.inv();
+Isogeny2::Isogeny2(const ProjectivePoint& K) : K(K) {
+    assert(!K.X.is_zero() && "2-isogeny kernel must not be (0:1)");
 }
 
+ProjectivePoint Isogeny2::get_next_A() const{
+    // (A' : C') = (2(Z^2 - 2X^2) : Z^2)
+    // A' = 2(Z^2 - 2X^2)/Z^2 (Affine)
+    Fp2 t0 = K.Z * K.Z;
 
-ProjectivePoint Isogeny2::eval(const ProjectivePoint& Q) const{
-    Fp2 t0 = Q.X + Q.Z;
-    Fp2 t1 = Q.X - Q.Z;
-    Fp2 t2 = K.X + K.Z;
-    Fp2 t3 = K.X - K.Z;
-    
-    t0 = t0 * t3;
-    t1 = t1 * t2;
-    t2 = t0 + t1;
-    t3 = t0 - t1;
-    
-    t2 = t2 * t2; 
-    t3 = t3 * t3;
-    
-    Fp2 next_X = Q.X * t2;
-    Fp2 next_Z = Q.Z * t3;
+    return ProjectivePoint(Fp2(2) * (t0 - Fp2(2) * K.X * K.X), t0);
+}
 
+ProjectivePoint Isogeny2::eval(const ProjectivePoint& P) const{
+    
+    Fp2 t0 = (K.X + K.Z) * (P.X - P.Z);
+    Fp2 t1 = (K.X - K.Z) * (P.X + P.Z);
+
+    Fp2 next_X = P.X * (t0 + t1);
+    Fp2 next_Z = P.Z * (t0 - t1);
+    
     return ProjectivePoint(next_X, next_Z);
 }
 
 Isogeny3::Isogeny3(const ProjectivePoint& K) : K(K) {}
 
 // べルーの公式で射影座標における3-isogeny曲線変換
-Fp2 Isogeny3::get_next_A(const Fp2& current_A) const {
-    // アフィン相当の式: A' = (A * xK - 6 * (xK^2 - 1)) * xK
-    Fp2 xK = K.X * K.Z.inv(); // xK = XK / ZK
-    Fp2 xK2 = xK * xK;
-
-    Fp2 term1 = current_A * xK;
-    Fp2 term2 = (xK2 - Fp2(1, 0)) * Fp2(6, 0);
-
-    return (term1 - term2) * xK;
+ProjectivePoint Isogeny3::get_next_A(const ProjectivePoint& current_A) const {
+    
 }
 
 // 点Qを同種写像で写す
@@ -69,14 +53,14 @@ ProjectivePoint Isogeny3::eval(const ProjectivePoint& Q) const {
 }
 
 IsogenyChainResult iso_chain_2e(
-    const Fp2& start_A, 
+    const ProjectivePoint& start_A, 
     ProjectivePoint S, 
     int e, 
     ProjectivePoint P, 
     ProjectivePoint Q, 
     ProjectivePoint R
 ) {
-    Fp2 current_A = start_A;
+    ProjectivePoint current_A = start_A;
     MontgomeryCurve curve(current_A);
 
     for (int i = e - 1; i >= 0; --i) {
@@ -85,7 +69,7 @@ IsogenyChainResult iso_chain_2e(
         for (int j = 0; j < i; ++j) {
             K = curve.xDBL(K);
         }
-        
+
         // 2. K を核として 2-isogeny を構築
         Isogeny2 iso(K);
         current_A = iso.get_next_A();
@@ -102,14 +86,14 @@ IsogenyChainResult iso_chain_2e(
 }
 
 IsogenyChainResult iso_chain_3e(
-    const Fp2& start_A, 
+    const ProjectivePoint& start_A, 
     ProjectivePoint S, 
     int e, 
     ProjectivePoint P, 
     ProjectivePoint Q, 
     ProjectivePoint R
 ) {
-    Fp2 current_A = start_A;
+    ProjectivePoint current_A = start_A;
     MontgomeryCurve curve(current_A);
 
     for (int i = e - 1; i >= 0; --i) {

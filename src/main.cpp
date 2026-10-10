@@ -58,9 +58,28 @@ static void test_ladder3pt() {
     std::cout << "[OK] ladder3pt\n";
 }
 
+static void test_isogeny2() {
+    MontgomeryCurve E(INITIAL_A);
+
+    for (const ProjectivePoint& G : {P_A, R_A}) {      // Q_A は核が (0:1) になるので使わない
+        ProjectivePoint K = E.xMUL(G, 4);               // 位数 2 の核
+        Isogeny2 iso(K);
+        MontgomeryCurve E2(iso.get_next_A());
+        ProjectivePoint phiG = iso.eval(G);
+
+        assert(iso.eval(K).is_infinity());
+        assert(E2.xMUL(phiG, 4).is_infinity());
+        assert(!E2.xMUL(phiG, 2).is_infinity());
+        assert(proj_eq(iso.eval(E.xDBL(G)), E2.xDBL(phiG)));
+        assert(proj_eq(iso.eval(E.xMUL(G, 3)), E2.xMUL(phiG, 3)));
+    }
+    std::cout << "[OK] isogeny2\n";
+}
+
 int main() {
     test_montgomery_ladder();
     test_tripling();
     test_ladder3pt();
+    test_isogeny2();
     return 0;
 }

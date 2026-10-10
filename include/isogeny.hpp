@@ -13,8 +13,8 @@ public:
     // コンストラクタ: 核となる点 K を渡して初期化
     explicit Isogeny2(const ProjectivePoint& K);
 
-    // 新しい曲線 E' のパラメータ A' を計算する (BuildIsogeny)
-    Fp2 get_next_A() const;
+    // 新しい曲線 E' のパラメータ A' を計算する
+    ProjectivePoint get_next_A() const;
 
     // 点 Q を新しい曲線 E' 上の点 phi(Q) に写像する (EvalIsogeny)
     ProjectivePoint eval(const ProjectivePoint& Q) const;
@@ -31,14 +31,14 @@ public:
     explicit Isogeny3(const ProjectivePoint& K);
 
     // 新しい曲線 E' のパラメータ A' を計算する (BuildIsogeny)
-    Fp2 get_next_A(const Fp2& current_A) const;
+    ProjectivePoint get_next_A(const ProjectivePoint& current_A) const;
 
     // 点 Q を新しい曲線 E' 上の点 phi(Q) に写像する (EvalIsogeny)
     ProjectivePoint eval(const ProjectivePoint& Q) const;
 };
 
 struct IsogenyChainResult {
-    Fp2 final_A;              // 最終的に到達した曲線のパラメータ A'
+    ProjectivePoint final_A;              // 最終的に到達した曲線のパラメータ A'
     ProjectivePoint phi_P;    // 写像された点 phi(P)
     ProjectivePoint phi_Q;    // 写像された点 phi(Q)
     ProjectivePoint phi_R;    // phi(R) ここでR=P-Qでこれは楕円曲線上の加算P+Qで必要
@@ -49,7 +49,7 @@ struct IsogenyChainResult {
 // eは同種写像のステップ数(最初に指定される),P,Qはボブの基底点でこれをアリスの写像に通したあと計算用のRと一緒にボブに渡す
 // 二度目のラウンドではstart_Aはボブから送られてきた楕円曲線,Sはボブから来たP,Qで作った位数2^eの点,PQRは使わない
 IsogenyChainResult iso_chain_2e(
-    const Fp2& start_A, 
+    const ProjectivePoint& start_A, 
     const ProjectivePoint S,
     int e, 
     const ProjectivePoint P, 
