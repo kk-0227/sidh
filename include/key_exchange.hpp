@@ -1,9 +1,8 @@
 #ifndef KEY_EXCHANGE_HPP
 #define KEY_EXCHANGE_HPP
-#include "params.hpp"
+
 #include "isogeny.hpp"
 
-using namespace ToyParams;
 using PublicKey = IsogenyChainResult;
 
 // Alice: 秘密鍵 m_A から公開鍵を作る
@@ -17,6 +16,5 @@ Fp2 alice_shared(uint64_t m_A, const PublicKey& bob_pk);
 
 // Bob: 同様
 Fp2 bob_shared(uint64_t m_B, const PublicKey& alice_pk);
-
 
 #endif // KEY_EXCHANGE_HPP

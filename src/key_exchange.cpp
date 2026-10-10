@@ -1,9 +1,9 @@
 #include "key_exchange.hpp"
+#include "params.hpp"
 
+using namespace ToyParams;
 
-
-
-PublicKey alice_keygen(uint64_t m_A){
+PublicKey alice_keygen(uint64_t m_A) {
 
     // 曲線の生成
     MontgomeryCurve curve(INITIAL_A);
@@ -15,7 +15,7 @@ PublicKey alice_keygen(uint64_t m_A){
     return iso_chain_2e(curve.get_A(), S, E_A, P_B, Q_B, R_B);
 }
 
-PublicKey bob_keygen(uint64_t m_B){
+PublicKey bob_keygen(uint64_t m_B) {
 
     MontgomeryCurve curve(INITIAL_A);
 
@@ -33,6 +33,7 @@ Fp2 alice_shared(uint64_t m_A, const PublicKey& bob_pk) {
     // bobが写したphi_B(P_A), phi_B(Q_A), phi_B(R_A)から核Sを生成
     ProjectivePoint S = curve.LADDER3PT(bob_pk.phi_P, bob_pk.phi_Q, bob_pk.phi_R, m_A);
 
+    // 写す点は使わないので、ダミーを渡す
     PublicKey ans = iso_chain_2e(bob_pk.final_A, S, E_A, ProjectivePoint(), ProjectivePoint(), ProjectivePoint());
 
     return calc_j_invariant(ans.final_A);

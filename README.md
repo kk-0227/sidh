@@ -33,7 +33,7 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学�
 - [x] 有限体演算(Fp, Fp2)
 - [x] Montgomery曲線上の演算
 - [x] 同種写像
-- [ ] 鍵交換
+- [x] 鍵交換
 
 ## 注意
 - 学習目的です。実運用には使わないでください。
