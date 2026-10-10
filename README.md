@@ -29,10 +29,15 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。
 - **一度つまずいた実装を、書き直した**: 以前の同種写像の実装は、2^e の連鎖が合わなかったため、
   参考実装と論文を読み直して、最初から書き直しました。
 
+## ディレクトリ構成
+- `include/` : ヘッダ(`fp.hpp`、`fp2.hpp`、`curve.hpp`、`isogeny.hpp`、`key_exchange.hpp`、`params.hpp`)
+- `src/` : 実装と、テスト(`main.cpp`)
+
 ## ビルドと実行
 ```bash
-    ./compile.sh
+./compile.sh
 ```
+
 `build/main` を生成して、そのままテストを実行します(g++ の C++17 対応版が必要です)。
 
 ## 注意
