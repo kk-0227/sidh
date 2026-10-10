@@ -72,5 +72,5 @@ public:
 };
 
 // j不変量の計算
-Fp2 calc_j_invariant(const Fp2& A);
+Fp2 calc_j_invariant(const ProjectivePoint& A) ;
 #endif // CURVE_HPP

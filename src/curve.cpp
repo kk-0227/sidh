@@ -132,12 +132,14 @@ ProjectivePoint MontgomeryCurve::LADDER3PT(const ProjectivePoint& P, const Proje
     return R1;
 }
 
-Fp2 calc_j_invariant(const Fp2& A) {
-    Fp2 A2 = A * A;
-    Fp2 num = A2 - Fp2(3, 0);
-    num = num * num * num * Fp2(256, 0); // 256 * (A^2 - 3)^3
+Fp2 calc_j_invariant(const ProjectivePoint& A) {
+    // j = 256 (A^2 - 3C^2)^3 / ( C^4 (A^2 - 4C^2) )
+    Fp2 t0 = A.X * A.X;
+    Fp2 t1 = A.Z * A.Z;
+    Fp2 t2 = (t0 - Fp2(3) * t1);
 
-    Fp2 den = A2 - Fp2(4, 0); // A^2 - 4
+    Fp2 num = Fp2(256)  * t2 * t2 * t2;
+    Fp2 den = t1 * t1 * (t0 - Fp2(4) * t1);
 
     return num * den.inv();
 }

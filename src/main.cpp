@@ -5,6 +5,7 @@
 #include "fp2.hpp"
 #include "curve.hpp"
 #include "isogeny.hpp"
+#include "key_exchange.hpp"
 
 using namespace ToyParams;
 
@@ -115,6 +116,49 @@ static void test_iso_chain_3e() {
     std::cout << "[OK] iso_chain_3e\n";
 }
 
+// Alice 側: 核 S = P_A + [m]Q_A (位数 2^3) で 2^e 同種写像を作り、Bob の点を写す
+static void test_iso_chain_2e() {
+    MontgomeryCurve E(INITIAL_A);
+    ProjectivePoint A0(INITIAL_A, Fp2(1));
+
+    for (uint64_t m = 0; m < 8; ++m) {
+        ProjectivePoint S = E.LADDER3PT(P_A, Q_A, R_A, m);   // P_A + [m]Q_A
+        IsogenyChainResult r = iso_chain_2e(A0, S, E_A, P_B, Q_B, R_B);
+        MontgomeryCurve F(r.final_A);
+
+        assert(F.xMUL(r.phi_P, 9).is_infinity());             // 位数 9 のまま
+        assert(!F.xMUL(r.phi_P, 3).is_infinity());
+
+        for (uint64_t k = 0; k < 9; ++k) {                    // 準同型性
+            ProjectivePoint X = E.LADDER3PT(P_B, Q_B, R_B, k);   // P_B + kQ_B
+            IsogenyChainResult rx = iso_chain_2e(A0, S, E_A, X, Q_B, R_B);
+            assert(proj_eq(rx.phi_P, F.LADDER3PT(r.phi_P, r.phi_Q, r.phi_R, k)));
+        }
+    }
+    std::cout << "[OK] iso_chain_2e\n";
+}
+
+static void test_j_invariant() {
+    ProjectivePoint a(INITIAL_A, Fp2(1));
+    ProjectivePoint a5(INITIAL_A * Fp2(5), Fp2(5));    // (5A : 5)、同じ曲線
+
+    assert(calc_j_invariant(ProjectivePoint(Fp2(0), Fp2(1))) == Fp2(24));   // 1728 mod 71
+    assert(calc_j_invariant(a) == calc_j_invariant(a5));                    // 射影のスケールに依らない
+    assert(calc_j_invariant(a) == calc_j_invariant(ProjectivePoint(-INITIAL_A, Fp2(1))));   // A と -A は同じ j
+    std::cout << "[OK] j-invariant\n";
+}
+
+static void test_key_exchange() {
+    for (uint64_t m_A = 0; m_A < 8; ++m_A) {
+        for (uint64_t m_B = 0; m_B < 9; ++m_B) {
+            PublicKey pkA = alice_keygen(m_A);
+            PublicKey pkB = bob_keygen(m_B);
+            assert(alice_shared(m_A, pkB) == bob_shared(m_B, pkA));
+        }
+    }
+    std::cout << "[OK] key exchange\n";
+}
+
 int main() {
     test_montgomery_ladder();
     test_tripling();
@@ -122,5 +166,8 @@ int main() {
     test_isogeny2();
     test_isogeny3();
     test_iso_chain_3e();
+    test_iso_chain_2e();
+    test_j_invariant();
+    test_key_exchange();
     return 0;
 }

@@ -32,9 +32,7 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学�
 ## 状況
 - [x] 有限体演算(Fp, Fp2)
 - [x] Montgomery曲線上の演算
-- [ ] 同種写像
-  - [x] 2-isogeny、3-isogeny(1回分)
-  - [ ] 同種写像の連鎖(2^e、3^e)
+- [x] 同種写像
 - [ ] 鍵交換
 
 ## 注意
