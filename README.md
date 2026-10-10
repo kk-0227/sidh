@@ -30,7 +30,9 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。
   参考実装と論文を読み直して、最初から書き直しました。
 
 ## ビルドと実行
+```bash
     ./compile.sh
+```
 `build/main` を生成して、そのままテストを実行します(g++ の C++17 対応版が必要です)。
 
 ## 注意
