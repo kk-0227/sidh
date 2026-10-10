@@ -1,6 +1,6 @@
 # sidh
 
-SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学習用プロジェクトです。
+SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。
 
 ## 目的
 理論として学んだ SIDH(同種写像を用いた鍵交換)を、実際に実装して動かす経験をすること、
@@ -29,11 +29,9 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学�
 - **一度つまずいた実装を、書き直した**: 以前の同種写像の実装は、2^e の連鎖が合わなかったため、
   参考実装と論文を読み直して、最初から書き直しました。
 
-## 状況
-- [x] 有限体演算(Fp, Fp2)
-- [x] Montgomery曲線上の演算
-- [x] 同種写像
-- [x] 鍵交換
+## ビルドと実行
+    ./compile.sh
+`build/main` を生成して、そのままテストを実行します(g++ の C++17 対応版が必要です)。
 
 ## 注意
 - 学習目的です。実運用には使わないでください。
