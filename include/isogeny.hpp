@@ -38,7 +38,7 @@ public:
 };
 
 struct IsogenyChainResult {
-    ProjectivePoint final_A;              // 最終的に到達した曲線のパラメータ A'
+    ProjectivePoint final_A;  // 最終的な曲線の係数 (A' : C')
     ProjectivePoint phi_P;    // 写像された点 phi(P)
     ProjectivePoint phi_Q;    // 写像された点 phi(Q)
     ProjectivePoint phi_R;    // phi(R) ここでR=P-Qでこれは楕円曲線上の加算P+Qで必要
@@ -59,7 +59,7 @@ IsogenyChainResult iso_chain_2e(
 
 // 3^e同種写像
 IsogenyChainResult iso_chain_3e(
-    const Fp2& start_A, 
+    const ProjectivePoint& start_A, 
     const ProjectivePoint S,
     int e, 
     const ProjectivePoint P, 

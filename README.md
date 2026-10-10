@@ -1,18 +1,18 @@
 # sidh
 
-SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学習用プロジェクトです
+SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学習用プロジェクトです。
 
 ## 目的
 理論として学んだ SIDH(同種写像を用いた鍵交換)を、実際に実装して動かす経験をすること、
-そして、理論と実装の違いやギャップを理解することが目的です
-実装を通して、理論の理解を深めることにもつながると考えています
+そして、理論と実装の違いやギャップを理解することが目的です。
+実装を通して、理論の理解を深めることにもつながると考えています。
 
 ## 方針
-- 小さい**トイパラメータ**で動作を確認できる実装を目指しています
+- 小さい**トイパラメータ**で動作を確認できる実装を目指しています。
 - SIKEの参考実装(C)は、安全性のための最適化や対策で複雑になっているため、
-  こちらは**読みやすさと計算の正しさを優先**して、シンプルに手書きしています
-- 論文(Costello-Longa-Naehrig)と参考実装を見ながら、なるべくライブラリを使わず、自分で書いています
-- 正しく実装できているかを検証するため、小さいテストケースを作り、sagemathを使って正しい出力と比較しつつ進めています
+  こちらは**読みやすさと計算の正しさを優先**して、シンプルに手書きしています。
+- 論文(Costello-Longa-Naehrig)と参考実装を見ながら、なるべくライブラリを使わず、自分で書いています。
+- 正しく実装できているかを検証するため、小さいテストケースを作り、sagemathを使って正しい出力と比較しつつ進めています。
 
 ## 工夫した点
 - **曲線の係数を、事前に計算して持つ**: `MontgomeryCurve` が `A+2C`、`4C`、`A-2C` などを
@@ -38,16 +38,14 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。開発中の学�
 - [ ] 鍵交換
 
 ## 注意
-- 学習目的です。実運用には使わないでください
-- トイパラメータのため、安全性はまったくありません
-- 定数時間実装などのサイドチャネル対策はしていません
-- SIDH/SIKEは2022年に[効率的な鍵回復攻撃](https://eprint.iacr.org/2022/975)が発表され、現在は安全でないと分かっています
+- 学習目的です。実運用には使わないでください。
+- トイパラメータのため、安全性はまったくありません。
+- 定数時間実装などのサイドチャネル対策はしていません。
+- SIDH/SIKEは2022年に[効率的な鍵回復攻撃](https://eprint.iacr.org/2022/975)が発表され、現在は安全でないと分かっています。
 
 ## 参考
 - C. Costello, P. Longa, M. Naehrig,
   [Efficient algorithms for supersingular isogeny Diffie-Hellman](https://eprint.iacr.org/2016/413)
   (CRYPTO 2016)
 - [microsoft/PQCrypto-SIDH](https://github.com/microsoft/PQCrypto-SIDH)
-  (上記論文の参考実装、C言語)
-- [SIKE specification](https://www.sike.org/files/SIDH-spec.pdf)
-  ([SIKE 公式サイト](https://sike.org/))
+

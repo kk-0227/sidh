@@ -95,11 +95,32 @@ static void test_isogeny3() {
     std::cout << "[OK] isogeny3\n";
 }
 
+static void test_iso_chain_3e() {
+    MontgomeryCurve E(INITIAL_A);
+    ProjectivePoint A0(INITIAL_A, Fp2(1));
+
+    for (const ProjectivePoint& S : {P_B, Q_B, R_B}) {
+        IsogenyChainResult r = iso_chain_3e(A0, S, E_B, P_A, Q_A, R_A);
+        MontgomeryCurve F(r.final_A);
+
+        assert(F.xMUL(r.phi_P, 8).is_infinity());    // 位数 8 のまま
+        assert(!F.xMUL(r.phi_P, 4).is_infinity());
+
+        for (uint64_t k = 0; k < 8; ++k) {            // 準同型性
+            ProjectivePoint X = E.LADDER3PT(P_A, Q_A, R_A, k);   // P + kQ
+            IsogenyChainResult rx = iso_chain_3e(A0, S, E_B, X, Q_A, R_A);
+            assert(proj_eq(rx.phi_P, F.LADDER3PT(r.phi_P, r.phi_Q, r.phi_R, k)));
+        }
+    }
+    std::cout << "[OK] iso_chain_3e\n";
+}
+
 int main() {
     test_montgomery_ladder();
     test_tripling();
     test_ladder3pt();
     test_isogeny2();
     test_isogeny3();
+    test_iso_chain_3e();
     return 0;
 }

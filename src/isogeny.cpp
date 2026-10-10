@@ -94,25 +94,25 @@ IsogenyChainResult iso_chain_3e(
     ProjectivePoint Q, 
     ProjectivePoint R
 ) {
+
+    // 現在の曲線を生成
     ProjectivePoint current_A = start_A;
     MontgomeryCurve curve(current_A);
 
     for (int i = e - 1; i >= 0; --i) {
+        // K = [3^i]S : 新しい同種写像の核
         ProjectivePoint K = S;
+
         for (int j = 0; j < i; ++j) {
-            K = curve.xDBL(K);
+            K = curve.xTPL(K);
         }
-
-        // --- 実行時アサーション: 核 K の位数3検証 ---
-        //assert(!K.Z.is_zero() && "Fatal: 3-torsion kernel point K degenerated to infinity.");
-        //ProjectivePoint K_times_2 = curve.xDBL(K);
-        //ProjectivePoint K_times_3 = curve.xDBLADD(K_times_2, K, K); // 差分点は K
-        //assert(K_times_3.Z.is_zero() && "Fatal: Kernel point K does not have strictly order 3.");
-        // -------------------------------------------
-
+        // 写像を生成
         Isogeny3 iso(K);
+
+        // 写像により移った先の曲線
         current_A = iso.get_next_A();
         curve = MontgomeryCurve(current_A);
+
 
         S = iso.eval(S);
         P = iso.eval(P);
