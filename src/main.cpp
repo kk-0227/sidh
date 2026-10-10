@@ -76,10 +76,30 @@ static void test_isogeny2() {
     std::cout << "[OK] isogeny2\n";
 }
 
+static void test_isogeny3() {
+    MontgomeryCurve E(INITIAL_A);
+
+    for (const ProjectivePoint& G : {P_B, Q_B, R_B}) {
+        ProjectivePoint K = E.xMUL(G, 3);
+        Isogeny3 iso(K);
+        MontgomeryCurve E2(iso.get_next_A());
+        ProjectivePoint phiG = iso.eval(G);
+
+        assert(iso.eval(K).is_infinity());                          // 核は無限遠点に写る
+        assert(E2.xMUL(phiG, 3).is_infinity());                     // phi(G) の位数は 3
+        assert(!phiG.is_infinity());                                // 1 ではない
+        assert(proj_eq(iso.eval(E.xDBL(G)), E2.xDBL(phiG)));        // phi(2G) = 2 phi(G)
+        assert(proj_eq(iso.eval(E.xTPL(G)), E2.xTPL(phiG)));        // phi(3G) = 3 phi(G)
+        assert(proj_eq(iso.eval(E.xMUL(G, 4)), E2.xMUL(phiG, 4)));  // phi(4G) = 4 phi(G)
+    }
+    std::cout << "[OK] isogeny3\n";
+}
+
 int main() {
     test_montgomery_ladder();
     test_tripling();
     test_ladder3pt();
     test_isogeny2();
+    test_isogeny3();
     return 0;
 }

@@ -16,8 +16,8 @@ public:
     // 新しい曲線 E' のパラメータ A' を計算する
     ProjectivePoint get_next_A() const;
 
-    // 点 Q を新しい曲線 E' 上の点 phi(Q) に写像する (EvalIsogeny)
-    ProjectivePoint eval(const ProjectivePoint& Q) const;
+    // 点 P を新しい曲線 E' 上の点 phi(Q) に写像する (EvalIsogeny)
+    ProjectivePoint eval(const ProjectivePoint& P) const;
 };
 
 
@@ -31,10 +31,10 @@ public:
     explicit Isogeny3(const ProjectivePoint& K);
 
     // 新しい曲線 E' のパラメータ A' を計算する (BuildIsogeny)
-    ProjectivePoint get_next_A(const ProjectivePoint& current_A) const;
+    ProjectivePoint get_next_A() const;
 
-    // 点 Q を新しい曲線 E' 上の点 phi(Q) に写像する (EvalIsogeny)
-    ProjectivePoint eval(const ProjectivePoint& Q) const;
+    // 点 P を新しい曲線 E' 上の点 phi(P) に写像する (EvalIsogeny)
+    ProjectivePoint eval(const ProjectivePoint& P) const;
 };
 
 struct IsogenyChainResult {

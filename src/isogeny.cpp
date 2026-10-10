@@ -10,7 +10,10 @@ ProjectivePoint Isogeny2::get_next_A() const{
     // A' = 2(Z^2 - 2X^2)/Z^2 (Affine)
     Fp2 t0 = K.Z * K.Z;
 
-    return ProjectivePoint(Fp2(2) * (t0 - Fp2(2) * K.X * K.X), t0);
+    Fp2 next_A = Fp2(2) * (t0 - Fp2(2) * K.X * K.X);
+    Fp2 next_C = t0;
+
+    return ProjectivePoint(next_A, next_C);
 }
 
 ProjectivePoint Isogeny2::eval(const ProjectivePoint& P) const{
@@ -20,34 +23,32 @@ ProjectivePoint Isogeny2::eval(const ProjectivePoint& P) const{
 
     Fp2 next_X = P.X * (t0 + t1);
     Fp2 next_Z = P.Z * (t0 - t1);
-    
+
     return ProjectivePoint(next_X, next_Z);
 }
 
 Isogeny3::Isogeny3(const ProjectivePoint& K) : K(K) {}
 
 // べルーの公式で射影座標における3-isogeny曲線変換
-ProjectivePoint Isogeny3::get_next_A(const ProjectivePoint& current_A) const {
-    
+ProjectivePoint Isogeny3::get_next_A() const {
+    // (A' : C') = (Z^4 + 18 * X^2 * Z^2 - 27 * X^4 : 4 * X * Z^3)
+
+    Fp2 t0 = K.X * K.X;
+    Fp2 t1 = K.Z * K.Z;
+
+    Fp2 next_A = t1 * t1 + Fp2(18) * t0 * t1 - Fp2(27) * t0 * t0;
+    Fp2 next_C = Fp2(4) * K.X * K.Z * t1;
+
+    return ProjectivePoint(next_A, next_C);
 }
 
-// 点Qを同種写像で写す
-ProjectivePoint Isogeny3::eval(const ProjectivePoint& Q) const {
-    Fp2 XQ_XK = Q.X * K.X;
-    Fp2 ZQ_ZK = Q.Z * K.Z;
-    Fp2 XQ_ZK = Q.X * K.Z;
-    Fp2 ZQ_XK = Q.Z * K.X;
+// 点Pを同種写像で写す
+ProjectivePoint Isogeny3::eval(const ProjectivePoint& P) const {
+    Fp2 t0 = K.X * P.X - K.Z * P.Z;
+    Fp2 t1 = K.Z * P.X - K.X * P.Z;
 
-    // term1 = XQ * XK - ZQ * ZK
-    Fp2 term1 = XQ_XK - ZQ_ZK;
-    term1 = term1 * term1; // (XQ*XK - ZQ*ZK)^2
-
-    // term2 = XQ * ZK - ZQ * XK
-    Fp2 term2 = XQ_ZK - ZQ_XK;
-    term2 = term2 * term2; // (XQ*ZK - ZQ*XK)^2
-
-    Fp2 next_X = Q.X * term1;
-    Fp2 next_Z = Q.Z * term2;
+    Fp2 next_X = P.X * t0 * t0;
+    Fp2 next_Z = P.Z * t1 * t1;
 
     return ProjectivePoint(next_X, next_Z);
 }
@@ -110,7 +111,7 @@ IsogenyChainResult iso_chain_3e(
         // -------------------------------------------
 
         Isogeny3 iso(K);
-        current_A = iso.get_next_A(current_A);
+        current_A = iso.get_next_A();
         curve = MontgomeryCurve(current_A);
 
         S = iso.eval(S);
