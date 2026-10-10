@@ -3,16 +3,20 @@
 SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。
 
 ## 目的
-理論として学んだ SIDH(同種写像を用いた鍵交換)を、実際に実装して動かす経験をすること、
+独学で学んだ SIDH(同種写像を用いた鍵交換)を、実際に実装して動かす経験をすること、
 そして、理論と実装の違いやギャップを理解することが目的です。
 実装を通して、理論の理解を深めることにもつながると考えています。
+
+## できること
+トイパラメータ(p = 71)で、SIDH の鍵生成と共有秘密の計算が動作します。
+Alice と Bob の秘密鍵のすべての組み合わせ(8 × 9 = 72 通り)で、
+両者の共有秘密(j 不変量)が一致します。
 
 ## 方針
 - 小さい**トイパラメータ**で動作を確認できる実装を目指しています。
 - SIKEの参考実装(C)は、安全性のための最適化や対策で複雑になっているため、
   こちらは**読みやすさと計算の正しさを優先**して、シンプルに手書きしています。
 - 論文(Costello-Longa-Naehrig)と参考実装を見ながら、なるべくライブラリを使わず、自分で書いています。
-- 正しく実装できているかを検証するため、小さいテストケースを作り、sagemathを使って正しい出力と比較しつつ進めています。
 
 ## 工夫した点
 - **曲線の係数を、事前に計算して持つ**: `MontgomeryCurve` が `A+2C`、`4C`、`A-2C` などを
@@ -29,17 +33,21 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。
 - **一度つまずいた実装を、書き直した**: 以前の同種写像の実装は、2^e の連鎖が合わなかったため、
   参考実装と論文を読み直して、最初から書き直しました。
 
-## ディレクトリ構成
-- `include/` : ヘッダ(`fp.hpp`、`fp2.hpp`、`curve.hpp`、`isogeny.hpp`、`key_exchange.hpp`、`params.hpp`)
-- `src/` : 実装と、テスト(`main.cpp`)
-
 ## ビルドと実行
-
 ```bash
-./compile.sh                     # ビルドして、テストを実行
-./build/main                     # 鍵交換のデモ
-./build/dump_shared_secrets      # 全組み合わせの共有秘密を出力(Sage との照合用)
+./compile.sh                 # ビルドして、テストを実行
+./build/main                 # 鍵交換のデモ
 ```
+C++17 対応の `g++` が必要です。
+
+## 検証
+- **単体テスト**(`tests/test_all.cpp`): 曲線演算、同種写像、鍵交換を、性質(準同型性など)で確認します。
+- **SageMath との照合**(`tests/sage/`): Sage 組み込みの同種写像で、共有秘密を独立に計算し、
+  C++ の出力(`./build/dump_shared_secrets`)と、全 72 通りで一致することを確認しています。
+  詳しくは [tests/sage/README.md](tests/sage/README.md) を参照してください。
+
+## 今後の課題
+- 本番パラメータ(P434 など)への対応(多倍長整数が必要)。
 
 ## 注意
 - 学習目的です。実運用には使わないでください。
@@ -52,4 +60,3 @@ SIDH(Supersingular Isogeny Diffie-Hellman)のC++実装です。
   [Efficient algorithms for supersingular isogeny Diffie-Hellman](https://eprint.iacr.org/2016/413)
   (CRYPTO 2016)
 - [microsoft/PQCrypto-SIDH](https://github.com/microsoft/PQCrypto-SIDH)
-
