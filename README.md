@@ -21,8 +21,14 @@ Alice の秘密鍵 `m_A` と Bob の秘密鍵 `m_B` を用いて、二人だけ�
 
 ## ビルドと実行
 ```bash
-./compile.sh                 # ビルドして、テストを実行
-./build/main                 # 鍵交換のデモ
+git clone https://github.com/kk-0227/sidh.git
+cd sidh
+
+# ビルドして、テストを実行
+./compile.sh
+
+# 鍵交換のデモ
+./build/main
 ```
 C++17 対応の `g++` が必要です。
 
